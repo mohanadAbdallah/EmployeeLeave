@@ -15,6 +15,7 @@ class LeaveRequestController extends Controller
     {
         $user = Auth::user();
         $leaveRequests = $user->leaveRequests()->latest()->get();
+
         return view('leave_requests.index', compact('leaveRequests'));
     }
 
@@ -28,8 +29,8 @@ class LeaveRequestController extends Controller
     {
         $validatedData = $request->validate([
             'leave_type_id' => ['required'],
-            'start_date' => ['required','date'],
-            'end_date' => ['required','date'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date'],
         ]);
 
         $user = Auth::user();
@@ -40,6 +41,15 @@ class LeaveRequestController extends Controller
         return redirect()->route('leave-requests.index')
             ->with('success', 'Leave request submitted successfully.');
     }
+
+    public function destroy(LeaveRequest $leaveRequest): RedirectResponse
+    {
+        $leaveRequest->delete();
+
+        return redirect()->route('leave-requests.index')
+            ->with('success', 'Leave request deleted successfully.');
+    }
+
     public function approve(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
         $leaveRequest->update(['status' => LeaveRequest::STATUS_APPROVED]);
@@ -49,6 +59,7 @@ class LeaveRequestController extends Controller
     public function deny(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
         $leaveRequest->update(['status' => LeaveRequest::STATUS_DENIED]);
+
         return back()->with('success', 'Leave Request Denied');
     }
 
