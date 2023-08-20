@@ -25,6 +25,7 @@
                             <th>نوع الإجازة</th>
                             <th>الحالة</th>
                             <th>الموظف</th>
+                            <th>الإجراءات</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -34,7 +35,12 @@
                             <tr>
                                 <td>{{$_SESSION['i']}}</td>
                                 <td>{{$leaveRequest->leaveType->name ?? ''}}</td>
-
+                                <td>
+                                    <span class="{{$leaveRequest->status_badge ?? ''}}">
+                                        {{$leaveRequest->LeaveRequestStatus ?? ''}}
+                                    </span>
+                                </td>
+                                <td>{{$leaveRequest->user->name ?? '' }}</td>
                                 <td>
                                     <a href="javascript:void(0)" class="bg-danger btn btn-sm btn-danger"
                                        onclick="deny({{$leaveRequest->id}})"
@@ -43,14 +49,15 @@
                                         <i class="fa fa-times-circle" aria-hidden="true"></i>
                                         Deny
                                     </a>
-                                    <a href="javascript:void(0)" class="bg-success btn btn-sm btn-success">
+                                    <a href="javascript:void(0)" class="bg-success btn btn-sm btn-success"
+                                       onclick="approve({{$leaveRequest->id}})"
+                                       data-toggle="modal" data-target="#approve_modal"
+
+                                    >
                                         <i class="fa fa-check-circle-o" aria-hidden="true"></i>
                                         Approve
                                     </a>
                                 </td>
-
-                                <td>{{$leaveRequest->user->name ?? '' }}</td>
-
                             </tr>
 
                         @endforeach
@@ -63,7 +70,7 @@
 
     </div>
 
-    {{--    Delete Modal--}}
+    {{--    Deny Modal--}}
     <div class="modal fade" id="deny_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -80,6 +87,33 @@
                     </div>
                     <div class="modal-body">
                         <p>Confirm Deny the Leave Request.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary bg-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary bg-primary">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--    Approve Modal--}}
+
+    <div class="modal fade" id="approve_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="approve_form" method="post" action="">
+                    @csrf
+                    @method('Put')
+                    <input name="id" id="leave_request_id" class="form-control" type="hidden">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Confirm Approve.</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Confirm Approve the Leave Request.</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary bg-secondary" data-dismiss="modal">Close</button>
@@ -114,6 +148,12 @@
             $('#leave_request_id').val(id);
             var url = "{{url('leave-requests')}}/" + id + "/deny";
             $('#deny_form').attr('action', url);
+        }
+
+        function approve(id) {
+            $('#leave_request_id').val(id);
+            var url = "{{url('leave-requests')}}/" + id + "/approve";
+            $('#approve_form').attr('action', url);
         }
     </script>
     <!-- /.container-fluid -->
