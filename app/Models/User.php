@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +23,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'department',
+        'jop_title',
+        'phone',
+        'isAdmin',
+        'department_id'
     ];
 
     /**
@@ -45,15 +51,20 @@ class User extends Authenticatable
     ];
     public function scopeEmployees($query)
     {
-        return $query->where('is_admin', false);
+        return $query->where('isAdmin', false);
     }
     public function scopeAdministrators($query)
     {
-        return $query->where('is_admin', true);
+        return $query->where('isAdmin', true);
     }
 
     public function leaveRequests(): HasMany
     {
         return $this->hasMany(LeaveRequest::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 }

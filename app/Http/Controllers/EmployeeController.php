@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeRequest;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class EmployeeController extends Controller
 {
     public function index(): View
     {
-        $employees = User::employees()->get();
+        $employees = User::with('department')->employees()->get();
+
         return view('employees.index', compact('employees'));
     }
 
@@ -22,16 +26,24 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        return view('employees.create');
+        $departments = Department::all();
+
+        return view('employees.create',compact('departments'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(EmployeeRequest $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:employees,email',
-        ]);
+        $validatedData = $request->validated();
         $validatedData['is_admin'] = false;
+
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('image')){
+            $image = $request->file('image')->store('images','public');
+            $validatedData['image'] = $image;
+        }
 
         User::create($validatedData);
 
@@ -41,15 +53,23 @@ class EmployeeController extends Controller
 
     public function edit(User $employee): View
     {
-        return view('employees.edit', compact('employee'));
+        $departments = Department::all();
+
+        return view('employees.edit', compact('employee','departments'));
     }
 
-    public function update(Request $request, User $employee): RedirectResponse
+    public function update(EmployeeRequest $request, User $employee): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:employees,email',
-        ]);
+        $validatedData = $request->validated();
+
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('image')){
+            $image = $request->file('image')->store('images','public');
+            $validatedData['image'] = $image;
+        }
 
         $employee->update($validatedData);
 

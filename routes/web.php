@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -31,7 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('leave-types',LeaveTypeController::class);
     Route::resource('leave-requests',LeaveRequestController::class);
 
+    Route::get('denied-leave-requests',[LeaveRequestController::class,'deniedLeaveRequests'])->name('denied-leave-requests.index');
+
     Route::put('leave-requests/{leaveRequest}/approve', [LeaveRequestController::class,'approve'])->name('leave_requests.approve');
+
     Route::put('leave-requests/{leaveRequest}/deny', [LeaveRequestController::class,'deny'])->name('leave_requests.deny');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

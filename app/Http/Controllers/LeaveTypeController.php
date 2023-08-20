@@ -55,4 +55,12 @@ class LeaveTypeController extends Controller
         return redirect()->route('leave-types.index')
             ->with('success', 'Leave type updated successfully.');
     }
+
+    public function destroy(LeaveType $leaveType): RedirectResponse
+    {
+        $leaveType->delete();
+
+        return redirect()->route('leave-types.index')
+            ->with('success', 'Leave type deleted successfully.');
+    }
 }

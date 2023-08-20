@@ -14,11 +14,19 @@ class LeaveRequestController extends Controller
     public function index(): View
     {
         $user = Auth::user();
-        $leaveRequests = $user->leaveRequests()->latest()->get();
+
+        $leaveRequests = $user->leaveRequests()->where('status','!=','denied')->latest()->get();
 
         return view('leave_requests.index', compact('leaveRequests'));
     }
 
+    public function deniedLeaveRequests(): View
+    {
+        $user = Auth::user();
+
+        $leaveRequests = $user->leaveRequests()->where('status','=','denied')->latest()->get();
+        return view('leave_requests.denied', compact('leaveRequests'));
+    }
     public function create(): View
     {
         $leaveTypes = LeaveType::all();
@@ -34,6 +42,7 @@ class LeaveRequestController extends Controller
         ]);
 
         $user = Auth::user();
+        $validatedData['status'] = LeaveRequest::STATUS_PENDING;
 
         $leaveRequest = new LeaveRequest($validatedData);
         $user->leaveRequests()->save($leaveRequest);
