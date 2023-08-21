@@ -13,51 +13,21 @@ class LeaveRequestController extends Controller
 {
     public function index(): View
     {
-        $user = Auth::user();
 
-        $leaveRequests = $user->leaveRequests()->where('status','!=','denied')->latest()->get();
+        $leaveRequests = LeaveRequest::where('status', '!=', 'denied')->latest()->get();
 
         return view('leave_requests.index', compact('leaveRequests'));
     }
+
 
     public function deniedLeaveRequests(): View
     {
         $user = Auth::user();
 
-        $leaveRequests = $user->leaveRequests()->where('status','=','denied')->latest()->get();
+        $leaveRequests = $user->leaveRequests()->where('status', '=', 'denied')->latest()->get();
         return view('leave_requests.denied', compact('leaveRequests'));
     }
-    public function create(): View
-    {
-        $leaveTypes = LeaveType::all();
-        return view('leave_requests.create', compact('leaveTypes'));
-    }
 
-    public function store(Request $request): RedirectResponse
-    {
-        $validatedData = $request->validate([
-            'leave_type_id' => ['required'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date'],
-        ]);
-
-        $user = Auth::user();
-        $validatedData['status'] = LeaveRequest::STATUS_PENDING;
-
-        $leaveRequest = new LeaveRequest($validatedData);
-        $user->leaveRequests()->save($leaveRequest);
-
-        return redirect()->route('leave-requests.index')
-            ->with('success', 'Leave request submitted successfully.');
-    }
-
-    public function destroy(LeaveRequest $leaveRequest): RedirectResponse
-    {
-        $leaveRequest->delete();
-
-        return redirect()->route('leave-requests.index')
-            ->with('success', 'Leave request deleted successfully.');
-    }
 
     public function approve(Request $request, LeaveRequest $leaveRequest): RedirectResponse
     {
@@ -71,5 +41,6 @@ class LeaveRequestController extends Controller
 
         return back()->with('success', 'Leave Request Denied');
     }
+
 
 }

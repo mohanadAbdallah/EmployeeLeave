@@ -36,14 +36,56 @@
         @include('partials.footer')
         <!-- End of Footer -->
 
+
     </div>
     <!-- End of Content Wrapper -->
 
-    <!-- Sidebar -->
-    @include('partials.sidebar')
-    <!-- End of Sidebar -->
+
+    <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
+        <!-- Sidebar - Brand -->
+        <!-- Divider -->
+
+            <hr class="sidebar-divider my-0">
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active mt-5">
+                <a class="nav-link" href="{{route('employee-leave-requests',auth()->user()->id)}}">
+                    <span>الرئيسية</span>
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                </a>
+            </li>
+
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{route('employee-leave-request.create')}}">
+                <span>تقديم طلب إجازة </span>
+                <i class="fas fa-fw fa-person-booth"></i>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <li class="nav-item">
+
+            <a class="nav-link" href="{{route('employee-leave-requests',auth()->user()->id)}}">
+                <span>إجازاتي </span>
+                <i class="fas fa-fw fa-person-booth"></i>
+            </a>
+        </li>
+
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+    </ul>
+
+
 </div>
-<!-- End of Page Wrapper -->
 
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">

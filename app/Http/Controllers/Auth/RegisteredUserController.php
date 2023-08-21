@@ -46,6 +46,10 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        if (Auth::user()->where('isAdmin', '=', 1)->first()) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        } else {
+            return redirect()->intended('employee-leave-requests',auth()->user()->id);
+        }
     }
 }

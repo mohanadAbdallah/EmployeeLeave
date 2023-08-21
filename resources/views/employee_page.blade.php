@@ -1,18 +1,5 @@
-@extends('layouts.master')
+@extends('layouts.employee')
 @section('content')
-    <!-- Content Row -->
-    {{--    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>--}}
-
-    {{--    <script>--}}
-    {{--        var pusher = new Pusher('22424c7e721c3213c490', {--}}
-    {{--            cluster: 'ap3'--}}
-    {{--        });--}}
-    {{--        var channel = pusher.subscribe('App.Models.User.'+"{{ auth()->id() }}");--}}
-
-    {{--        channel.bind('chat', function(data) {--}}
-    {{--            console.log(JSON.stringify(data.message.message))--}}
-    {{--        });--}}
-    {{--    </script>--}}
 
     <div class="row d-flex flex-row-reverse">
 

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.employee')
 
 @section('content')
     <!-- Begin Page Content -->
